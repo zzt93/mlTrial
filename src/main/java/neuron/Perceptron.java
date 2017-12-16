@@ -101,6 +101,8 @@ public class Perceptron {
     test((b1, b2) -> b1 | b2, "{} | {} = {}");
     logger.info("Train '!'");
     testNot();
+    logger.info("Train '^': not convergent");
+    test((b1, b2) -> b1 ^ b2, "{} ^ {} = {}");
   }
 
   private static void test(BiFunction<Boolean, Boolean, Boolean> f, String args) {
@@ -115,9 +117,11 @@ public class Perceptron {
           new double[]{b3 ? 1 : 0});
     }
     Perceptron train = Perceptron.train(labelPoints, 0.1, 20);
-    boolean b1 = random.nextBoolean();
-    boolean b2 = random.nextBoolean();
-    logger.info(args, b1, b2, train.test(new double[]{b1 ? 1 : 0, b2 ? 1 : 0}));
+    for (int i = 0; i < n; i++) {
+      boolean b1 = random.nextBoolean();
+      boolean b2 = random.nextBoolean();
+      logger.info(args, b1, b2, train.test(new double[]{b1 ? 1 : 0, b2 ? 1 : 0}));
+    }
   }
 
   private static void testNot() {
@@ -131,8 +135,10 @@ public class Perceptron {
           new double[]{b3 ? 1 : 0});
     }
     Perceptron train = Perceptron.train(labelPoints, 0.1, 20);
-    boolean b1 = random.nextBoolean();
-    logger.info("!{} = {}", b1, train.test(new double[]{b1 ? 1 : 0}));
+    for (int i = 0; i < n; i++) {
+      boolean b1 = random.nextBoolean();
+      logger.info("!{} = {}", b1, train.test(new double[]{b1 ? 1 : 0}));
+    }
   }
 
 }
