@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.function.BiFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +16,8 @@ import org.slf4j.LoggerFactory;
  *
  * <h3>Implement neuron networks only has a input layer and output layer</h3>
  * <ul>
- *   <li>small dataset multiple times training vs large dataset one time training</li>
- *   <li>update formula: learningRate * (hHat - y) * xi</li>
+ * <li>small dataset multiple times training vs large dataset one time training</li>
+ * <li>update formula: learningRate * (hHat - y) * xi</li>
  * </ul>
  */
 public class Perceptron {
@@ -48,7 +49,7 @@ public class Perceptron {
     Perceptron perceptron = new Perceptron(labelPoint.getData().length, learningRate);
     logger.info("Start training");
     for (int i = 0; i < max; i++) {
-      System.out.println(perceptron);
+      logger.info("{} training: {}", i, perceptron);
       perceptron.feedForwardAndUpdateWeight(input);
     }
     logger.info("Training finished");
@@ -94,20 +95,44 @@ public class Perceptron {
   }
 
   public static void main(String[] args) {
-    Random random = new Random(12);
+    logger.info("Train '&'");
+    test((b1, b2) -> b1 & b2, "{} & {} = {}");
+    logger.info("Train '|'");
+    test((b1, b2) -> b1 | b2, "{} | {} = {}");
+    logger.info("Train '!'");
+    testNot();
+  }
+
+  private static void test(BiFunction<Boolean, Boolean, Boolean> f, String args) {
+    Random random = new Random();
     int n = 20;
     LabelPoint[] labelPoints = new LabelPoint[n];
     for (int i = 0; i < n; i++) {
       boolean b1 = random.nextBoolean();
       boolean b2 = random.nextBoolean();
-      boolean b3 = b1 & b2;
+      boolean b3 = f.apply(b1, b2);
       labelPoints[i] = new LabelPoint(new double[]{b1 ? 1 : 0, b2 ? 1 : 0},
           new double[]{b3 ? 1 : 0});
     }
     Perceptron train = Perceptron.train(labelPoints, 0.1, 20);
     boolean b1 = random.nextBoolean();
     boolean b2 = random.nextBoolean();
-    System.out.format("%b & %b = %f", b1, b2, train.test(new double[]{b1 ? 1 : 0, b2 ? 1 : 0}));
+    logger.info(args, b1, b2, train.test(new double[]{b1 ? 1 : 0, b2 ? 1 : 0}));
+  }
+
+  private static void testNot() {
+    Random random = new Random();
+    int n = 20;
+    LabelPoint[] labelPoints = new LabelPoint[n];
+    for (int i = 0; i < n; i++) {
+      boolean b1 = random.nextBoolean();
+      boolean b3 = !b1;
+      labelPoints[i] = new LabelPoint(new double[]{b1 ? 1 : 0},
+          new double[]{b3 ? 1 : 0});
+    }
+    Perceptron train = Perceptron.train(labelPoints, 0.1, 20);
+    boolean b1 = random.nextBoolean();
+    logger.info("!{} = {}", b1, train.test(new double[]{b1 ? 1 : 0}));
   }
 
 }
