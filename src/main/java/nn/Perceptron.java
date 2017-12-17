@@ -1,6 +1,6 @@
-package neuron;
+package nn;
 
-import static neuron.ActivationFunction.SGN;
+import static nn.ActivationFunction.SGN;
 
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory;
  * <h3>Implement neuron networks only has a input layer and output layer</h3>
  * <ul>
  * <li>small dataset multiple times training vs large dataset one time training</li>
+ * <li>learning rate change not make convergent speed change?: because the activation function</li>
+ * <li>different dataset has different convergent speed</li>
+ * <li>'^': weight changed in dataset, but train with same dataset multiple times kept the weight</li>
  * <li>update formula: learningRate * (hHat - y) * xi</li>
  * </ul>
  */
@@ -95,12 +98,12 @@ public class Perceptron {
   }
 
   public static void main(String[] args) {
-    logger.info("Train '&'");
-    test((b1, b2) -> b1 & b2, "{} & {} = {}");
-    logger.info("Train '|'");
-    test((b1, b2) -> b1 | b2, "{} | {} = {}");
-    logger.info("Train '!'");
-    testNot();
+//    logger.info("Train '&'");
+//    test((b1, b2) -> b1 & b2, "{} & {} = {}");
+//    logger.info("Train '|'");
+//    test((b1, b2) -> b1 | b2, "{} | {} = {}");
+//    logger.info("Train '!'");
+//    testNot();
     logger.info("Train '^': not convergent");
     test((b1, b2) -> b1 ^ b2, "{} ^ {} = {}");
   }
@@ -116,7 +119,7 @@ public class Perceptron {
       labelPoints[i] = new LabelPoint(new double[]{b1 ? 1 : 0, b2 ? 1 : 0},
           new double[]{b3 ? 1 : 0});
     }
-    Perceptron train = Perceptron.train(labelPoints, 0.1, 20);
+    Perceptron train = Perceptron.train(labelPoints, 0.1, n);
     for (int i = 0; i < n; i++) {
       boolean b1 = random.nextBoolean();
       boolean b2 = random.nextBoolean();

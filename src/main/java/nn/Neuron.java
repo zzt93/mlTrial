@@ -1,4 +1,4 @@
-package neuron;
+package nn;
 
 import com.google.common.base.Preconditions;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package neuron;
+package nn;
 
 /**
  * Created by zzt on 12/15/17.
